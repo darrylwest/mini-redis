@@ -41,21 +41,15 @@ enum Command {
         key: String,
 
         /// Value to set.
-        #[clap(parse(from_str = bytes_from_str))]
-        value: Bytes,
-
-        /// Expire the value after specified amount of time
-        #[clap(parse(try_from_str = duration_from_ms_str))]
-        expires: Option<Duration>,
+        value: String,
     },
     ///  Publisher to send a message to a specific channel.
     Publish {
         /// Name of channel
         channel: String,
 
-        #[clap(parse(from_str = bytes_from_str))]
         /// Message to publish
-        message: Bytes,
+        message: String,
     },
     /// Subscribe a client to a specific channel or channels.
     Subscribe {
@@ -111,21 +105,12 @@ async fn main() -> mini_redis::Result<()> {
         Command::Set {
             key,
             value,
-            expires: None,
         } => {
-            client.set(&key, value).await?;
-            println!("OK");
-        }
-        Command::Set {
-            key,
-            value,
-            expires: Some(expires),
-        } => {
-            client.set_expires(&key, value, expires).await?;
+            client.set(&key, bytes_from_str(&value)).await?;
             println!("OK");
         }
         Command::Publish { channel, message } => {
-            client.publish(&channel, message.into()).await?;
+            client.publish(&channel, bytes_from_str(&message).into()).await?;
             println!("Publish OK");
         }
         Command::Subscribe { channels } => {
