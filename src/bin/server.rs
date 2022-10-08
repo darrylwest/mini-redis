@@ -35,6 +35,8 @@ pub async fn main() -> mini_redis::Result<()> {
     let cli = Cli::parse();
     let port = cli.port.unwrap_or(DEFAULT_PORT);
 
+    println!("listening on localhost:{}", &port);
+
     // Bind a TCP listener
     let listener = TcpListener::bind(&format!("127.0.0.1:{}", port)).await?;
 
