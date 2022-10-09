@@ -15,7 +15,7 @@
 //!
 //!     cargo run --example pub
 
-#![warn(rust_2018_idioms)]
+// #![warn(rust_2018_idioms)]
 
 use mini_redis::{client, Result};
 
@@ -25,7 +25,7 @@ async fn main() -> Result<()> {
     let mut client = client::connect("127.0.0.1:6379").await?;
 
     // publish message `bar` on channel foo
-    client.publish("foo", "bar".into()).await?;
+    client.publish("people.new", "bar".into()).await?;
 
     Ok(())
 }
