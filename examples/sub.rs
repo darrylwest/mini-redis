@@ -33,7 +33,10 @@ pub async fn main() -> Result<()> {
     loop {
         if let Some(msg) = subscriber.next_message().await? {
             let vkey = msg.content.to_vec();
-            let skey = &String::from_utf8(vkey).unwrap();
+            let skey = match String::from_utf8(vkey) {
+                Ok(s) => s,
+                Err(e) => panic!("not valid utf8: {}", e),
+            };
 
             list.push(skey.to_string());
 
@@ -46,5 +49,4 @@ pub async fn main() -> Result<()> {
 
         }
     }
-
 }
