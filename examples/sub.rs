@@ -27,17 +27,21 @@ pub async fn main() -> Result<()> {
     // subscribe to channel foo
     let mut subscriber = client.subscribe(vec!["people.new".into()]).await?;
 
+    let mut list: Vec<String> = vec![];
+
     // await messages on channel foo
     loop {
         if let Some(msg) = subscriber.next_message().await? {
             let vkey = msg.content.to_vec();
-            let skey = String::from_utf8(vkey).unwrap();
+            let skey = &String::from_utf8(vkey).unwrap();
+
+            list.push(skey.to_string());
 
             assert_eq!(skey.len(), 16);
 
             println!(
-                "got message from the channel: {}; message = {}",
-                msg.channel, skey,
+                "got message from the channel: {}; message = {}, len: {}",
+                msg.channel, skey, list.len(),
             );
 
         }
