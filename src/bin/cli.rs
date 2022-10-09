@@ -42,6 +42,9 @@ enum Command {
 
         /// Value to set.
         value: String,
+
+        /// expire from millis
+        expires: Option<String>,
     },
     ///  Publisher to send a message to a specific channel.
     Publish {
@@ -105,8 +108,18 @@ async fn main() -> mini_redis::Result<()> {
         Command::Set {
             key,
             value,
+            expires: None,
         } => {
             client.set(&key, bytes_from_str(&value)).await?;
+            println!("OK");
+        }
+        Command::Set {
+            key,
+            value,
+            expires: Some(expires),
+        } => {
+            let exp = duration_from_ms_str(&expires).expect("should parse to duration");
+            client.set_expires(&key, bytes_from_str(&value), exp).await?;
             println!("OK");
         }
         Command::Publish { channel, message } => {

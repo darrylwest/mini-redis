@@ -25,15 +25,22 @@ pub async fn main() -> Result<()> {
     let client = client::connect("127.0.0.1:6379").await?;
 
     // subscribe to channel foo
-    let mut subscriber = client.subscribe(vec!["foo".into()]).await?;
+    let mut subscriber = client.subscribe(vec!["people.new".into()]).await?;
 
     // await messages on channel foo
-    if let Some(msg) = subscriber.next_message().await? {
-        println!(
-            "got message from the channel: {}; message = {:?}",
-            msg.channel, msg.content
-        );
+    loop {
+        if let Some(msg) = subscriber.next_message().await? {
+            let vkey = msg.content.to_vec();
+            let skey = String::from_utf8(vkey).unwrap();
+
+            assert_eq!(skey.len(), 16);
+
+            println!(
+                "got message from the channel: {}; message = {}",
+                msg.channel, skey,
+            );
+
+        }
     }
 
-    Ok(())
 }
