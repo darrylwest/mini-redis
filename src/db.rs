@@ -153,15 +153,19 @@ impl Db {
 
         // simulate read
         for id in 0..3_u64 {
+            let n = 48 + id as u8;
+            let s = [n];
+            let data = Bytes::copy_from_slice(&s[..]);
+
             let key = format!("key-{}", id + 1);
-            let data = "value".as_bytes().into();
+            // let data = sdata.into();
             let entry = Entry {
                 id,
                 data: data,
                 expires_at: None,
             };
 
-            println!("{}", key);
+            println!("{:?}", entry);
 
             db.insert(key, entry);
         }
