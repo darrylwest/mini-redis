@@ -220,10 +220,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "domain_keys"
+version = "0.5.2"
+dependencies = [
+ "anyhow",
+ "clap",
+ "rand",
+]
+
+[[package]]
 name = "either"
 version = "1.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
+
+[[package]]
+name = "fake"
+version = "2.5.0"
+dependencies = [
+ "rand",
+]
 
 [[package]]
 name = "fastrand"
@@ -570,6 +586,8 @@ dependencies = [
  "atoi",
  "bytes",
  "clap",
+ "domain_keys",
+ "fake",
  "opentelemetry 0.18.0",
  "opentelemetry-aws",
  "opentelemetry-otlp",

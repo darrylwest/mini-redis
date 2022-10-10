@@ -6,7 +6,7 @@
 
 A test application that continuously writes new and modified data to the rxkv / redis server via the client.
 
-* use fake-rs with custom code to generate new struct data
+* use fake-rs + domain keys to generate new struct data
 * create write thread with random intervals timed for about 2 to 5 writes per second
 * create read thread with random intervals timed for about 20 to 30 reads per second
 * enhance redis client/server to support
@@ -16,4 +16,6 @@ A test application that continuously writes new and modified data to the rxkv / 
 * use channels to pull data from subscribers and store in local key vector
 
 ## Step 2
+
+###### darryl.west | 2022-10-10
 
