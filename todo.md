@@ -30,6 +30,7 @@ A test application that continuously writes new and modified data to the rxkv / 
 * strip out all telemetry and deps (after review)
 * add rolling file based logging to server
 * read config from file to set host/port 
+* unit and doc tests
 
 ###### darryl.west | 2022-10-10
 

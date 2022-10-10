@@ -1,5 +1,5 @@
 
-use crate::{Connection, Frame, Parse, ParseError};
+use crate::{Connection, Db, Frame, Parse, ParseError};
 use bytes::Bytes;
 use tracing::instrument;
 
@@ -31,11 +31,10 @@ impl DbSize {
     /// The response is written to `dst`. This is called by the server in order
     /// to execute a received command.
     #[instrument(skip(self, dst))]
-    pub(crate) async fn apply(self, dst: &mut Connection) -> crate::Result<()> {
-        let response = match self.dbsize {
-            None => Frame::Simple("0".to_string()),
-            Some(dbsize) => Frame::Bulk(Bytes::from(dbsize)),
-        };
+    pub(crate) async fn apply(self, db: &Db, dst: &mut Connection) -> crate::Result<()> {
+        let size = db.dbsize().to_string();
+
+        let response = Frame::Simple(size);
 
         // Write the response back to the client
         dst.write_frame(&response).await?;
@@ -49,7 +48,7 @@ impl DbSize {
     /// 
     pub(crate) fn into_frame(self) -> Frame {
         let mut frame = Frame::array();
-        frame.push_bulk(Bytes::from("ping".as_bytes()));
+        frame.push_bulk(Bytes::from("dbsize".as_bytes()));
         if let Some(msg) = self.dbsize {
             frame.push_bulk(Bytes::from(msg));
         }

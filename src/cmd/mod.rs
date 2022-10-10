@@ -106,7 +106,7 @@ impl Command {
             Set(cmd) => cmd.apply(db, dst).await,
             Subscribe(cmd) => cmd.apply(db, dst, shutdown).await,
             Ping(cmd) => cmd.apply(dst).await,
-            DbSize(cmd) => cmd.apply(dst).await,
+            DbSize(cmd) => cmd.apply(db, dst).await,
             Unknown(cmd) => cmd.apply(dst).await,
             // `Unsubscribe` cannot be applied. It may only be received from the
             // context of a `Subscribe` command.

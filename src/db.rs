@@ -159,6 +159,14 @@ impl Db {
         state.entries.get(key).map(|entry| entry.data.clone())
     }
 
+    /// Return the total number of db entries.
+    /// 
+    /// 
+    pub(crate) fn dbsize(&self) -> u64 {
+        let state = self.shared.state.lock().unwrap();
+        state.entries.len() as u64
+    }
+
     /// Set the value associated with a key along with an optional expiration
     /// Duration.
     ///
