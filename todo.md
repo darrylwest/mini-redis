@@ -18,11 +18,18 @@ A test application that continuously writes new and modified data to the rxkv / 
   * length of current db
 * use pub/sub to share data with all active application instances
 * use channels to pull data from subscribers and store in local key vector
+* add logging pub/sub channel
 
 ## Step 2
 
 * add daemon capabilities to db-server
-* test remote access to server (piedmont)
+* ~~test remote access to server (piedmont)~~
+
+## Misc
+
+* strip out all telemetry and deps (after review)
+* add rolling file based logging to server
+* read config from file to set host/port 
 
 ###### darryl.west | 2022-10-10
 
