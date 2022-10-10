@@ -2,7 +2,7 @@
 //!
 //! Provides an async connect and methods for issuing the supported commands.
 
-use crate::cmd::{Get, Ping, Publish, Set, Subscribe, Unsubscribe};
+use crate::cmd::{Get, DbSize, Ping, Publish, Set, Subscribe, Unsubscribe};
 use crate::{Connection, Frame};
 
 use async_stream::try_stream;
@@ -112,6 +112,23 @@ impl Client {
     #[instrument(skip(self))]
     pub async fn ping(&mut self, msg: Option<String>) -> crate::Result<Bytes> {
         let frame = Ping::new(msg).into_frame();
+        debug!(request = ?frame);
+
+        self.connection.write_frame(&frame).await?;
+
+        match self.read_response().await? {
+            Frame::Simple(value) => Ok(value.into()),
+            Frame::Bulk(value) => Ok(value),
+            frame => Err(frame.to_error()),
+        }
+    }
+
+    /// DbSize is the current number of db elements
+    /// 
+    #[instrument(skip(self))]
+    pub async fn dbsize(&mut self) -> crate::Result<Bytes> {
+        let zero: Option<String> = Some("0".to_string());
+        let frame = DbSize::new(zero).into_frame();
         debug!(request = ?frame);
 
         self.connection.write_frame(&frame).await?;

@@ -8,7 +8,7 @@ use std::time::Duration;
 
 #[derive(Parser, Debug)]
 #[clap(
-    name = "mini-redis-cli",
+    name = "db-cli",
     version,
     author,
     about = "Issue Redis commands"
@@ -29,6 +29,9 @@ enum Command {
     Ping {
         /// Message to ping
         msg: Option<String>,
+    },
+    DbSize {
+        dbsize: Option<String>,
     },
     /// Get the value of key.
     Get {
@@ -92,6 +95,14 @@ async fn main() -> mini_redis::Result<()> {
                 println!("\"{}\"", string);
             } else {
                 println!("{:?}", value);
+            }
+        }
+        Command::DbSize { dbsize } => {
+            let value = client.dbsize().await?;
+            if let Ok(sz) = str::from_utf8(&value) {
+                println!("size: {:?}", sz);
+            } else {
+                println!("fake size: {:?}", dbsize);
             }
         }
         Command::Get { key } => {
