@@ -128,12 +128,14 @@ impl Db {
     /// Create a new, empty, `Db` instance. Allocates shared state and spawns a
     /// background task to manage key expiration.
     pub(crate) fn new() -> Db {
+        let db = Db::init_entries();
+        let id = db.len() as u64;
         let shared = Arc::new(Shared {
             state: Mutex::new(State {
-                entries: HashMap::new(),
+                entries: db,
                 pub_sub: HashMap::new(),
                 expirations: BTreeMap::new(),
-                next_id: 0,
+                next_id: id,
                 shutdown: false,
             }),
             background_task: Notify::new(),
@@ -143,6 +145,30 @@ impl Db {
         tokio::spawn(purge_expired_tasks(shared.clone()));
 
         Db { shared }
+    }
+
+    // read the data from backup file; insert entries and return
+    fn init_entries() -> HashMap<String, Entry> {
+        let mut db = HashMap::new();
+
+        // simulate read
+        for id in 0..3_u64 {
+            let key = format!("key-{}", id + 1);
+            let data = "value".as_bytes().into();
+            let entry = Entry {
+                id,
+                data: data,
+                expires_at: None,
+            };
+
+            println!("{}", key);
+
+            db.insert(key, entry);
+        }
+
+        println!("db size: {}", db.len());
+
+        db
     }
 
     /// Get the value associated with a key.

@@ -9,6 +9,7 @@ A test application that continuously writes new and modified data to the rxkv / 
 * enhance redis client/server to support
   * ~~length of current db~~
   * return all keys
+  * read static data on server startup
 * use fake-rs + domain keys to generate new struct data
     * ~~add domain_keys dep: `cargo add --path ../domain-keys`~~
     * ~~add fake-rs dep: `cargo add --path ../fake-rs/fake`~~
