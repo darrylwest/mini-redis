@@ -35,12 +35,17 @@ pub async fn main() -> Result<()> {
             let vkey = msg.content.to_vec();
             let skey = match String::from_utf8(vkey) {
                 Ok(s) => s,
-                Err(e) => panic!("not valid utf8: {}", e),
+                Err(e) => { // panic!("not valid utf8: {}", e),
+                    println!("bad utf8: {}", e);
+                    "".to_string()
+                }
             };
 
-            list.push(skey.to_string());
-
             assert_eq!(skey.len(), 16);
+
+            if skey.len() == 16 {
+                list.push(skey.to_string());
+            }
 
             println!(
                 "got message from the channel: {}; message = {}, len: {}",
