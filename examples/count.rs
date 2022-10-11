@@ -16,8 +16,8 @@ use mini_redis::{client, Result};
 pub async fn main() -> Result<()> {
     // Open a connection to the mini-redis address.
 
-    // let host = "piedmont.local";
-    let host = "127.0.0.1";
+    let host = "piedmont.local";
+    // let host = "127.0.0.1";
     let port = 6379;
 
     println!("connecing to {}:{}", host, port);
