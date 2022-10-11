@@ -13,8 +13,8 @@ pub use subscribe::{Subscribe, Unsubscribe};
 mod ping;
 pub use ping::Ping;
 
-mod dbsize;
-pub use dbsize::DbSize;
+mod count;
+pub use count::Count;
 
 mod unknown;
 pub use unknown::Unknown;
@@ -32,7 +32,7 @@ pub enum Command {
     Subscribe(Subscribe),
     Unsubscribe(Unsubscribe),
     Ping(Ping),
-    DbSize(DbSize),
+    Count(Count),
     Unknown(Unknown),
 }
 
@@ -67,7 +67,7 @@ impl Command {
             "subscribe" => Command::Subscribe(Subscribe::parse_frames(&mut parse)?),
             "unsubscribe" => Command::Unsubscribe(Unsubscribe::parse_frames(&mut parse)?),
             "ping" => Command::Ping(Ping::parse_frames(&mut parse)?),
-            "dbsize" => Command::DbSize(DbSize::parse_frames(&mut parse)?),
+            "count" => Command::Count(Count::parse_frames(&mut parse)?),
             _ => {
                 // The command is not recognized and an Unknown command is
                 // returned.
@@ -106,7 +106,7 @@ impl Command {
             Set(cmd) => cmd.apply(db, dst).await,
             Subscribe(cmd) => cmd.apply(db, dst, shutdown).await,
             Ping(cmd) => cmd.apply(dst).await,
-            DbSize(cmd) => cmd.apply(db, dst).await,
+            Count(cmd) => cmd.apply(db, dst).await,
             Unknown(cmd) => cmd.apply(dst).await,
             // `Unsubscribe` cannot be applied. It may only be received from the
             // context of a `Subscribe` command.
@@ -123,7 +123,7 @@ impl Command {
             Command::Subscribe(_) => "subscribe",
             Command::Unsubscribe(_) => "unsubscribe",
             Command::Ping(_) => "ping",
-            Command::DbSize(_) => "dbsize",
+            Command::Count(_) => "count",
             Command::Unknown(cmd) => cmd.get_name(),
         }
     }

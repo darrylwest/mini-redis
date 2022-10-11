@@ -216,7 +216,7 @@ impl Db {
     /// Return the total number of db entries.
     ///
     ///
-    pub(crate) fn dbsize(&self) -> u64 {
+    pub(crate) fn count(&self) -> u64 {
         let state = self.shared.state.lock().unwrap();
         state.entries.len() as u64
     }

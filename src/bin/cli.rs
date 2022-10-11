@@ -25,8 +25,8 @@ enum Command {
         /// Message to ping
         msg: Option<String>,
     },
-    DbSize {
-        dbsize: Option<String>,
+    Count {
+        count: Option<String>,
     },
     /// Get the value of key.
     Get {
@@ -92,7 +92,7 @@ async fn main() -> mini_redis::Result<()> {
                 println!("{:?}", value);
             }
         }
-        Command::DbSize { .. } => {
+        Command::Count { .. } => {
             let value = client.dbsize().await?;
             println!("count: {}", value.count());
         }
