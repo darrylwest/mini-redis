@@ -125,7 +125,7 @@ impl Client {
 
     /// Count is the current number of db elements
     ///
-    pub async fn dbsize(&mut self) -> crate::Result<Count> {
+    pub async fn count(&mut self) -> crate::Result<Count> {
         let frame = Count::new(0u64).into_frame();
         debug!(request = ?frame);
 

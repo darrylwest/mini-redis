@@ -93,7 +93,7 @@ async fn main() -> mini_redis::Result<()> {
             }
         }
         Command::Count { .. } => {
-            let value = client.dbsize().await?;
+            let value = client.count().await?;
             println!("count: {}", value.count());
         }
         Command::Get { key } => {
