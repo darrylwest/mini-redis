@@ -64,14 +64,21 @@ async fn dbsize() {
     let mut stream = TcpStream::connect(addr).await.unwrap();
 
     // Get the size
-    stream
-        // .write_all(b"*2\r\n$3\r\nGET\r\n$5\r\nkey-1\r\n")
-        .write_all(b"*2\r\n$5\r\ndbsize\r\n")
-        .await
-        .unwrap();
+    stream.write_all(b"$6\r\n+DBSIZE\r\n").await.unwrap();
 
     // Shutdown the write half
     stream.shutdown().await.unwrap();
+
+    /*
+
+    // Read size response
+    let mut response = [0; 7];
+    stream.read_exact(&mut response).await.unwrap();
+
+    assert_eq!(b"$1\r\n0\r\n", &response);
+    assert_eq!(0, stream.read(&mut response).await.unwrap());
+
+    */
 
     let mut buffer = bytes::BytesMut::with_capacity(64);
     let result = stream.read_buf(&mut buffer).await;
@@ -85,14 +92,6 @@ async fn dbsize() {
             print!("{}", buffer[idx] as char);
         }
     }
-
-    // Read size response
-    // let mut response = [0; 1];
-    // stream.read_exact(&mut response).await.unwrap();
-
-    // assert_eq!(b"$1\r\n3\r\n", &response);
-
-    // assert_eq!(0, stream.read(&mut response).await.unwrap());
 }
 
 /// Similar to the basic key-value test, however, this time timeouts will be

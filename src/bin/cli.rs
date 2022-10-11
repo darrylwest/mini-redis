@@ -92,13 +92,9 @@ async fn main() -> mini_redis::Result<()> {
                 println!("{:?}", value);
             }
         }
-        Command::DbSize { dbsize } => {
+        Command::DbSize { .. } => {
             let value = client.dbsize().await?;
-            if let Ok(sz) = str::from_utf8(&value) {
-                println!("size: {:?}", sz);
-            } else {
-                println!("fake size: {:?}", dbsize);
-            }
+            println!("count: {}", value.count());
         }
         Command::Get { key } => {
             if let Some(value) = client.get(&key).await? {

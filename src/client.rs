@@ -125,17 +125,14 @@ impl Client {
 
     /// DbSize is the current number of db elements
     ///
-    #[instrument(skip(self))]
-    pub async fn dbsize(&mut self) -> crate::Result<Bytes> {
-        let zero: Option<String> = Some("0".to_string());
-        let frame = DbSize::new(zero).into_frame();
+    pub async fn dbsize(&mut self) -> crate::Result<DbSize> {
+        let frame = DbSize::new(0u64).into_frame();
         debug!(request = ?frame);
 
         self.connection.write_frame(&frame).await?;
 
         match self.read_response().await? {
-            Frame::Simple(value) => Ok(value.into()),
-            Frame::Bulk(value) => Ok(value),
+            Frame::Integer(value) => Ok(DbSize::new(value)),
             frame => Err(frame.to_error()),
         }
     }

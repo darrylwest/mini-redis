@@ -6,21 +6,29 @@ use tracing::instrument;
 ///
 #[derive(Debug, Default)]
 pub struct DbSize {
-    dbsize: Option<String>,
+    size: u64,
 }
 
 impl DbSize {
     /// Create a new `DbSize` command.
-    pub fn new(dbsize: Option<String>) -> DbSize {
-        DbSize { dbsize }
+    pub fn new(size: u64) -> DbSize {
+        DbSize { size }
+    }
+
+    /// return the number of elements in the db
+    pub fn count(&self) -> u64 {
+        self.size
     }
 
     /// Parse a `DbSize` instance from a received frame.
     ///
+    /// if the return is successful the size is returned wrapped in a DbSize struct
+    /// wrapped in Ok.
+    /// 
     pub(crate) fn parse_frames(parse: &mut Parse) -> crate::Result<DbSize> {
-        match parse.next_string() {
-            Ok(dbsize) => Ok(DbSize::new(Some(dbsize))),
-            Err(ParseError::EndOfStream) => Ok(DbSize::new(Some("0".to_string()))),
+        match parse.next_int() {
+            Ok(dbsize) => Ok(DbSize::new(dbsize)),
+            Err(ParseError::EndOfStream) => Ok(DbSize::new(0u64)),
             Err(e) => Err(e.into()),
         }
     }
@@ -31,9 +39,10 @@ impl DbSize {
     /// to execute a received command.
     #[instrument(skip(self, dst))]
     pub(crate) async fn apply(self, db: &Db, dst: &mut Connection) -> crate::Result<()> {
-        let size = db.dbsize().to_string();
+        let size = db.dbsize(); // .to_string();
 
-        let response = Frame::Simple(size);
+        // let response = Frame::Simple(size);
+        let response = Frame::Integer(size);
 
         // Write the response back to the client
         dst.write_frame(&response).await?;
@@ -48,9 +57,7 @@ impl DbSize {
     pub(crate) fn into_frame(self) -> Frame {
         let mut frame = Frame::array();
         frame.push_bulk(Bytes::from("dbsize".as_bytes()));
-        if let Some(msg) = self.dbsize {
-            frame.push_bulk(Bytes::from(msg));
-        }
+
         frame
     }
 }
