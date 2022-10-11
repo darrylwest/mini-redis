@@ -157,8 +157,8 @@ impl Db {
                 Ok(n) => n,
                 Err(e) => {
                     eprintln!(
-                        "Error {} found {} from env, could not parse to u64: {}",
-                        LOAD_DATA_ENV_KEY, val, e
+                        "Error from os/env: '{}={val}', err: {}, '{val}'.",
+                        LOAD_DATA_ENV_KEY, e
                     );
                     0u64
                 }
