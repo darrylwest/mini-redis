@@ -6,6 +6,8 @@ use std::collections::{BTreeMap, HashMap};
 use std::sync::{Arc, Mutex};
 use tracing::debug;
 
+pub const LOAD_DATA_ENV_KEY: &str = "RXKV_LOAD_COUNT";
+
 /// A wrapper around a `Db` instance. This exists to allow orderly cleanup
 /// of the `Db` by signalling the background purge task to shut down when
 /// this struct is dropped.
@@ -128,7 +130,8 @@ impl Db {
     /// Create a new, empty, `Db` instance. Allocates shared state and spawns a
     /// background task to manage key expiration.
     pub(crate) fn new() -> Db {
-        let db = Db::init_entries();
+        let load_count = Db::read_load_count();
+        let db = Db::init_entries(load_count);
         let id = db.len() as u64;
         let shared = Arc::new(Shared {
             state: Mutex::new(State {
@@ -147,32 +150,53 @@ impl Db {
         Db { shared }
     }
 
+    // read any load count from os env
+    fn read_load_count() -> u64 {
+        match std::env::var(LOAD_DATA_ENV_KEY) {
+            Ok(val) => match val.parse::<u64>() {
+                Ok(n) => n,
+                Err(e) => {
+                    eprintln!(
+                        "Error {} found {} from env, could not parse to u64: {}",
+                        LOAD_DATA_ENV_KEY, val, e
+                    );
+                    0u64
+                }
+            },
+            Err(_) => 0u64,
+        }
+    }
+
     // read the data from backup file; insert entries and return
-    fn init_entries() -> HashMap<String, Entry> {
+    fn init_entries(count: u64) -> HashMap<String, Entry> {
         let mut db = HashMap::new();
 
-        // simulate read
-        for id in 0..3_u64 {
-            let n = 65 + id as u8;
-            let s = [n, 45, 40, 97, 98, 99, 41];
-            let data = Bytes::copy_from_slice(&s[..]);
-
-            let key = format!("key-{}", id + 1);
-            // let data = sdata.into();
-            let entry = Entry {
-                id,
-                data,
-                expires_at: None,
-            };
-
-            println!("{:?}", entry);
-
+        for id in 0..count {
+            let (key, entry) = Self::read_data(id);
             db.insert(key, entry);
         }
 
-        println!("db size: {}", db.len());
-
         db
+    }
+
+    fn read_data(id: u64) -> (String, Entry) {
+        // simulate read
+        let n = 65 + id as u8;
+        let offset = id as u8;
+        let s = [n, 45, 40, 97 + offset, 98 + offset, 99 + offset, 41];
+        let data = Bytes::copy_from_slice(&s[..]);
+
+        let key = format!("key-{}", id + 1);
+        // let data = sdata.into();
+        let entry = Entry {
+            id,
+            data,
+            expires_at: None,
+        };
+
+        println!("{:?}", entry);
+
+        (key, entry)
     }
 
     /// Get the value associated with a key.
@@ -413,4 +437,45 @@ async fn purge_expired_tasks(shared: Arc<Shared>) {
     }
 
     debug!("Purge background task shut down")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::env;
+
+    #[test]
+    fn init_entries() {
+        // should return an empty map
+        let map = Db::init_entries(0u64);
+
+        assert_eq!(map.len(), 0);
+    }
+
+    #[test]
+    fn init_entries_with_count() {
+        let map = Db::init_entries(8u64);
+
+        assert_eq!(map.len(), 8);
+        // println!("{:?}", map);
+    }
+
+    #[test]
+    fn read_load_count_from_os_env() {
+        let key = LOAD_DATA_ENV_KEY;
+
+        env::set_var(key, "0");
+
+        let count = Db::read_load_count();
+        assert_eq!(count, 0);
+
+        env::set_var(key, "bad");
+        let count = Db::read_load_count();
+        assert_eq!(count, 0);
+
+        // println!("{:?}", map);
+        env::set_var(key, "5");
+        let count = Db::read_load_count();
+        assert_eq!(count, 5);
+    }
 }
