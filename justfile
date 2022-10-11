@@ -42,10 +42,6 @@ watch:
 cover:
   cargo tarpaulin --out html --output-dir coverage
 
-# merge the develop branch to main
-merge:
-    clear && cargo test && cargo fmt && cargo clippy && git push && git checkout main && git pull && git merge develop && git push && git checkout develop
-
 update-piedmont:
     ssh dpw@piedmont 'cd ~/raincity/rust-projects/{{ project }} && git pull'
 
