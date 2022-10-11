@@ -24,7 +24,7 @@ impl DbSize {
     ///
     /// if the return is successful the size is returned wrapped in a DbSize struct
     /// wrapped in Ok.
-    /// 
+    ///
     pub(crate) fn parse_frames(parse: &mut Parse) -> crate::Result<DbSize> {
         match parse.next_int() {
             Ok(dbsize) => Ok(DbSize::new(dbsize)),
