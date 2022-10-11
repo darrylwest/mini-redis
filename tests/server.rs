@@ -56,6 +56,45 @@ async fn key_value_get_set() {
     assert_eq!(0, stream.read(&mut response).await.unwrap());
 }
 
+// TODO - fix this test; need more info from the redis frame...
+#[tokio::test]
+async fn dbsize() {
+    let addr = start_server().await;
+
+    let mut stream = TcpStream::connect(addr).await.unwrap();
+
+    // Get the size
+    stream
+        // .write_all(b"*2\r\n$3\r\nGET\r\n$5\r\nkey-1\r\n")
+        .write_all(b"*2\r\n$5\r\ndbsize\r\n")
+        .await
+        .unwrap();
+
+    // Shutdown the write half
+    stream.shutdown().await.unwrap();
+
+    let mut buffer = bytes::BytesMut::with_capacity(64);
+    let result = stream.read_buf(&mut buffer).await;
+
+    if result.is_err() {
+        println!("error: {:?}", result.err());
+    } else {
+        println!("buf: {:?}", &buffer[..]);
+
+        for idx in 0..buffer.len() {
+            print!("{}", buffer[idx] as char);
+        }
+    }
+
+    // Read size response
+    // let mut response = [0; 1];
+    // stream.read_exact(&mut response).await.unwrap();
+
+    // assert_eq!(b"$1\r\n3\r\n", &response);
+
+    // assert_eq!(0, stream.read(&mut response).await.unwrap());
+}
+
 /// Similar to the basic key-value test, however, this time timeouts will be
 /// tested. This test demonstrates how to test time related behavior.
 ///

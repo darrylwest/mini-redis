@@ -153,8 +153,8 @@ impl Db {
 
         // simulate read
         for id in 0..3_u64 {
-            let n = 48 + id as u8;
-            let s = [n];
+            let n = 65 + id as u8;
+            let s = [n, 45, 40, 97, 98, 99, 41];
             let data = Bytes::copy_from_slice(&s[..]);
 
             let key = format!("key-{}", id + 1);
