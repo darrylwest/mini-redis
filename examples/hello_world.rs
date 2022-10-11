@@ -31,7 +31,7 @@ pub async fn main() -> Result<()> {
     let result = client.get("hello").await?;
 
     if result.is_some() {
-        println!("got value: {:?} from {}", result.unwrap(), host); 
+        println!("got value: {:?} from {}", result.unwrap(), host);
     } else {
         println!("{} returned success={:?}", host, result.is_some());
     }

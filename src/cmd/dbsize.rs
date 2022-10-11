@@ -1,4 +1,3 @@
-
 use crate::{Connection, Db, Frame, Parse, ParseError};
 use bytes::Bytes;
 use tracing::instrument;
@@ -6,7 +5,7 @@ use tracing::instrument;
 /// Returns db size
 ///
 #[derive(Debug, Default)]
-pub struct DbSize { 
+pub struct DbSize {
     dbsize: Option<String>,
 }
 
@@ -45,7 +44,7 @@ impl DbSize {
     /// Converts the command into an equivalent `Frame`.
     ///
     /// This is called by the client when encoding a `DbSize` command sent to the server.
-    /// 
+    ///
     pub(crate) fn into_frame(self) -> Frame {
         let mut frame = Frame::array();
         frame.push_bulk(Bytes::from("dbsize".as_bytes()));

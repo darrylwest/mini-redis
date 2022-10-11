@@ -7,12 +7,7 @@ use std::str;
 use std::time::Duration;
 
 #[derive(Parser, Debug)]
-#[clap(
-    name = "db-cli",
-    version,
-    author,
-    about = "Issue Redis commands"
-)]
+#[clap(name = "db-cli", version, author, about = "Issue Redis commands")]
 struct Cli {
     #[clap(subcommand)]
     command: Command,
@@ -130,11 +125,13 @@ async fn main() -> mini_redis::Result<()> {
             expires: Some(expires),
         } => {
             let exp = duration_from_ms_str(&expires).expect("should parse to duration");
-            client.set_expires(&key, bytes_from_str(&value), exp).await?;
+            client
+                .set_expires(&key, bytes_from_str(&value), exp)
+                .await?;
             println!("OK");
         }
         Command::Publish { channel, message } => {
-            client.publish(&channel, bytes_from_str(&message).into()).await?;
+            client.publish(&channel, bytes_from_str(&message)).await?;
             println!("Publish OK");
         }
         Command::Subscribe { channels } => {

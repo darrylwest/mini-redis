@@ -8,6 +8,7 @@ A test application that continuously writes new and modified data to the rxkv / 
 
 * enhance redis client/server to support
   * ~~length of current db~~
+  * determine how to write a json string to Bytes or BytesMut for Entry.data
   * return all keys
   * _read static data on server startup (partial insert of mock data in place)._
   * figure out what the id in Entry is for and see if it can (should) be removed
@@ -29,6 +30,7 @@ A test application that continuously writes new and modified data to the rxkv / 
 
 ## Misc
 
+* replace json transport with message pack
 * strip out all telemetry and deps (after review)
 * add rolling file based logging to server
 * read config from file to set host/port 

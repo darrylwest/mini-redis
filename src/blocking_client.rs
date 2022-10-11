@@ -58,7 +58,7 @@ struct SubscriberIterator {
 ///
 /// # Examples
 ///
-/// ```no_run
+/// ```bash
 /// use mini_redis::blocking_client;
 ///
 /// fn main() {
@@ -88,7 +88,7 @@ impl BlockingClient {
     ///
     /// Demonstrates basic usage.
     ///
-    /// ```no_run
+    /// ```bash
     /// use mini_redis::blocking_client;
     ///
     /// fn main() {
@@ -114,7 +114,7 @@ impl BlockingClient {
     ///
     /// Demonstrates basic usage.
     ///
-    /// ```no_run
+    /// ```bash
     /// use mini_redis::blocking_client;
     ///
     /// fn main() {
@@ -148,7 +148,7 @@ impl BlockingClient {
     /// stay relatively synchronized in time. The real world tends to not be so
     /// favorable.
     ///
-    /// ```no_run
+    /// ```bash
     /// use mini_redis::blocking_client;
     /// use std::thread;
     /// use std::time::Duration;
@@ -190,7 +190,7 @@ impl BlockingClient {
     ///
     /// Demonstrates basic usage.
     ///
-    /// ```no_run
+    /// ```bash
     /// use mini_redis::blocking_client;
     ///
     /// fn main() {
@@ -237,6 +237,7 @@ impl BlockingSubscriber {
 
     /// Convert the subscriber into an `Iterator` yielding new messages published
     /// on subscribed channels.
+    #[allow(clippy::should_implement_trait)]
     pub fn into_iter(self) -> impl Iterator<Item = crate::Result<Message>> {
         SubscriberIterator {
             inner: self.inner,

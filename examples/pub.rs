@@ -17,8 +17,8 @@
 
 // #![warn(rust_2018_idioms)]
 
-use mini_redis::{client, Result};
 use domain_keys::keys::RouteKey;
+use mini_redis::{client, Result};
 
 #[tokio::main]
 async fn main() -> Result<()> {

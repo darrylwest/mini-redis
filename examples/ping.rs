@@ -27,7 +27,7 @@ pub async fn main() -> Result<()> {
     let result = client.ping(None).await?;
 
     if let Ok(s) = str::from_utf8(&result) {
-        println!("got value: {} from {}", s, host); 
+        println!("got value: {} from {}", s, host);
     } else {
         println!("{} returned success={:?}", host, result);
     }

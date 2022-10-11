@@ -35,7 +35,8 @@ pub async fn main() -> Result<()> {
             let vkey = msg.content.to_vec();
             let skey = match String::from_utf8(vkey) {
                 Ok(s) => s,
-                Err(e) => { // panic!("not valid utf8: {}", e),
+                Err(e) => {
+                    // panic!("not valid utf8: {}", e),
                     println!("bad utf8: {}", e);
                     "".to_string()
                 }
@@ -49,9 +50,10 @@ pub async fn main() -> Result<()> {
 
             println!(
                 "got message from the channel: {}; message = {}, len: {}",
-                msg.channel, skey, list.len(),
+                msg.channel,
+                skey,
+                list.len(),
             );
-
         }
     }
 }
