@@ -181,12 +181,12 @@ impl Db {
 
     fn read_data(id: u64) -> (String, Entry) {
         // simulate read
-        let n = 65 + id as u8;
-        let offset = id as u8;
+        let n = 65 + (id % 26) as u8;
+        let offset = (id % 22) as u8;
         let s = [n, 45, 40, 97 + offset, 98 + offset, 99 + offset, 41];
         let data = Bytes::copy_from_slice(&s[..]);
 
-        let key = format!("key-{}", id + 1);
+        let key = format!("key-{}", id);
         // let data = sdata.into();
         let entry = Entry {
             id,
