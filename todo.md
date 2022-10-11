@@ -41,5 +41,5 @@ A test application that continuously writes new and modified data to the rxkv / 
 * unit and doc tests
 * add github/actions to test merge to main
 
-###### darryl.west | 2022-10-10a
+###### darryl.west | 2022-10-11
 
