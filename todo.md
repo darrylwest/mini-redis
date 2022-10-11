@@ -33,12 +33,13 @@ A test application that continuously writes new and modified data to the rxkv / 
 
 ## Misc
 
-* replace dbsize with count and count_by(predicate)
+* ~~replace dbsize with count~~ and count_by(predicate)
 * replace json transport with message pack
 * strip out all telemetry and deps (after review)
 * add rolling file based logging to server
 * read config from file to set host/port 
 * unit and doc tests
+* add github/actions to test merge to main
 
 ###### darryl.west | 2022-10-10a
 
