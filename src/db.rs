@@ -221,6 +221,18 @@ impl Db {
         state.entries.len() as u64
     }
 
+    /// Return all the db keys
+    pub(crate) fn keys(&self) -> Vec<String> {
+        let mut v = vec![];
+        let state = self.shared.state.lock().unwrap();
+
+        for key in state.entries.keys() {
+            v.push(key.to_owned());
+        }
+
+        v
+    }
+
     /// Set the value associated with a key along with an optional expiration
     /// Duration.
     ///
@@ -478,4 +490,17 @@ mod tests {
         let count = Db::read_load_count();
         assert_eq!(count, 5);
     }
+
+    /*
+    #[test]
+    fn keys() {
+        let db = Db::new();
+        let count = db.count();
+
+        // let keys = map.keys();
+        let keys = db.keys();
+
+        assert_eq!(keys.len(), count as usize);
+    }
+    */
 }
