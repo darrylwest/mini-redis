@@ -16,6 +16,9 @@ pub use ping::Ping;
 mod count;
 pub use count::Count;
 
+mod keys;
+pub use keys::Keys;
+
 mod unknown;
 pub use unknown::Unknown;
 
