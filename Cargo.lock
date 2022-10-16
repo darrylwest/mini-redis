@@ -221,7 +221,8 @@ dependencies = [
 
 [[package]]
 name = "domain_keys"
-version = "0.5.2"
+version = "0.5.3"
+source = "git+https://github.com/darrylwest/domain-keys.git#2e0ba67dd197f45fa5d27972c1b53afee54db41f"
 dependencies = [
  "anyhow",
  "clap",

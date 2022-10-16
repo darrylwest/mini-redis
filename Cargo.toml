@@ -39,7 +39,7 @@ tracing-opentelemetry = { version = "0.18", optional = true }
 opentelemetry-aws = { version = "0.5.0", optional = true }
 # Allows you to send data to the OTel collector
 opentelemetry-otlp = { version = "0.11.0", optional = true }
-domain_keys = { version = "0.5.2", path = "../domain-keys" }
+domain_keys = { git = "https://github.com/darrylwest/domain-keys.git" }
 fake = { version = "2.5.0", path = "../fake-rs/fake" }
 
 [dev-dependencies]
